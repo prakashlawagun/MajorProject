@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Email Form</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container">
+    <h2>Email Form</h2>
+    <form id="emailForm" method="POST" action="http://127.0.0.1:8000/api/notification/send-email/">
+      <div class="form-group">
+        <label for="subject">Subject:</label>
+        <input type="text" class="form-control" id="subject" name="subject" placeholder="Enter subject" required>
+      </div>
+      <div class="form-group">
+        <label for="message">Message:</label>
+        <textarea class="form-control" id="message" name="message" rows="5" placeholder="Enter message" required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Send Email</button>
+    </form>
+
+    <div id="alertContainer"></div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+  <!-- Custom JavaScript -->
+  <script>
+    // Listen for form submission
+    document.getElementById("emailForm").addEventListener("submit", function(event) {
+      event.preventDefault(); // Prevent the form from submitting
+
+      // Disable the submit button
+      var submitBtn = document.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+
+      // Fetch the form data
+      var formData = new FormData(this);
+
+      // Send a POST request to the API endpoint
+      fetch("http://127.0.0.1:8000/api/notification/send-email/", {
+        method: "POST",
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Check if the email was sent successfully
+        if (data.message === "Email sent successfully.") {
+          // Display a success alert
+          showAlert("danger", "Failed to send Email.");
+          // Clear the form inputs
+          clearFormInputs();
+        } else {
+          // Display an error alert
+          showAlert("success", "Email sent successfully.");
+        }
+      })
+      .catch(error => {
+        console.error(error);
+        // Display an error alert
+        showAlert("danger", "An error occurred.");
+      })
+      .finally(() => {
+        // Re-enable the submit button
+        submitBtn.disabled = false;
+      });
+    });
+
+    // Function to display an alert
+    function showAlert(type, message) {
+      var alertDiv = document.createElement("div");
+      alertDiv.className = "alert alert-" + type;
+      alertDiv.innerHTML = message;
+
+      var alertContainer = document.getElementById("alertContainer");
+      alertContainer.innerHTML = ""; // Clear any existing alerts
+      alertContainer.appendChild(alertDiv);
+
+      // Automatically remove the alert after 3 seconds
+      setTimeout(function() {
+        alertDiv.remove();
+      }, 3000);
+    }
+
+    // Function to clear form inputs
+    function clearFormInputs() {
+      document.getElementById("subject").value = "";
+      document.getElementById("message").value = "";
+    }
+  </script>
+</body>
+</html>
