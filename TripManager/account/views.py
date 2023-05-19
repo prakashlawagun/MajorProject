@@ -10,6 +10,8 @@ from rest_framework.permissions import IsAuthenticated
 from django.utils.encoding import smart_str, force_bytes, DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.shortcuts import get_object_or_404
+from .models import User
 
 
 def get_tokens_for_user(user):
@@ -57,6 +59,18 @@ class UserChangePasswordView(APIView):
         serializer.is_valid(raise_exception=True)
         return Response({'msg': 'Password Changed Successfully'}, status=status.HTTP_200_OK)
 
+class UserDeleteView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, pk):
+        user = get_object_or_404(User, pk=pk)
+        
+        # Check if the authenticated user is the owner of the account
+        if user != request.user:
+            return Response({"error": "You are not authorized to delete this account."}, status=403)
+        
+        user.delete()
+        return Response(status=204)
 
 class SendPasswordResetEmailView(APIView):
     renderer_classes = [UserRenderer]
