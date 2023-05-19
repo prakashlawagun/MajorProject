@@ -9,6 +9,9 @@ def clean():
         for directory in dirs:
             if directory == "__pycache__":
                 os.system(f'git rm -r {os.path.join(root, directory)} -f')
+                #delete media files
+            if directory == "media":
+                os.system(f'git rm -r {os.path.join(root, directory)} -f')
             # Delete migrations too
             if directory == "migrations":
                 os.system(f'git rm -r {os.path.join(root, directory)} -f')
