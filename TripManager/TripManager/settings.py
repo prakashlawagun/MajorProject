@@ -36,6 +36,10 @@ LOCAL_APPS = [
     'feedback',
     'email_notification',
 ]
+THIRD_PARTY_APPS = [
+    'oauth2_provider',
+    'rest_framework_social_oauth2',
+]
 
 
 INSTALLED_APPS = [
@@ -48,7 +52,7 @@ INSTALLED_APPS = [
                      'rest_framework',
                       'corsheaders',
                      'rest_framework_simplejwt',
-                 ]+LOCAL_APPS
+                 ]+LOCAL_APPS+THIRD_PARTY_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -153,6 +157,9 @@ AUTH_USER_MODEL = 'account.User'
 
 
 PASSWORD_RESET_TIMEOUT=900
+
+
+
 
 # JWT Settings
 SIMPLE_JWT = {

@@ -21,6 +21,8 @@ def restart():
                 if file.is_file():
                     file.unlink()
                     print(f'Deleted {file}')
+                
+                    
 
     APPS_LIST_STR = ' '.join(LOCAL_APPS)
 
@@ -28,6 +30,7 @@ def restart():
     os.system('python3 manage.py migrate')
     os.system('python3 superuser.py')
     os.system('python3 clean.py')
+    os.system('python3 media_clean.py')
     print('Restarted successfully!')
     os.system('python3 manage.py runserver 127.0.0.1:8000 ')
 
