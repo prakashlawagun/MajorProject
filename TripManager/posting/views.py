@@ -35,15 +35,6 @@ class CommentDeleteView(generics.DestroyAPIView):
         else:
             return Response({"message":"You are not allowed to delete this comment."})
 
-
-class CommentDeleteView(generics.DestroyAPIView):
-    queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
-    permission_classes = [IsOwnerOrReadOnly]
-
-    def perform_destroy(self, instance):
-        instance.delete()
-
     
 class LikeCreateView(generics.CreateAPIView):
     queryset = Like.objects.all()

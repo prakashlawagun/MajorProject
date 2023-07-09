@@ -1,12 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
-
+from django.utils import timezone
 
 #  Custom User Manager
 class UserManager(BaseUserManager):
     def create_user(self, email, username, password=None, confirm_password=None):
         """
-      Creates and saves a User with the given email, name, tc and password.
+      Creates and saves a User with the given email, name,and password.
       """
         if not email:
             raise ValueError('User must have an email address')
@@ -70,3 +70,20 @@ class User(AbstractBaseUser):
         "Is the user a member of staff?"
         # Simplest possible answer: All admins are staff
         return self.is_admin
+
+
+
+class OTP(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    otp_code = models.CharField(max_length=6)
+    created_at = models.DateTimeField(default=timezone.now)
+    is_expired = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.otp_code
+
+    def is_valid(self):
+        """
+        Check if the OTP is still valid (not expired).
+        """
+        return not self.is_expired

@@ -12,7 +12,9 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.shortcuts import get_object_or_404
 from .models import User
-
+from profiles.models import Profile
+from django.shortcuts import render,redirect
+from django.views.generic import TemplateView
 
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
@@ -30,6 +32,7 @@ class UserRegistrationView(APIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         token = get_tokens_for_user(user)
+        profile = Profile.objects.create(user=user)
         return Response({'token': token, 'msg': 'Registration Successful'}, status=status.HTTP_201_CREATED)
 
 
@@ -39,15 +42,20 @@ class UserLoginView(APIView):
     def post(self, request, format=None):
         serializer = UserLoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        email = serializer.data.get('email')
-        password = serializer.data.get('password')
+        email = serializer.validated_data.get('email')
+        password = serializer.validated_data.get('password')
         user = authenticate(email=email, password=password)
         if user is not None:
             token = get_tokens_for_user(user)
             return Response({'token': token, 'msg': 'Login Success'}, status=status.HTTP_200_OK)
         else:
-            return Response({'errors': {'non_field_errors': ['Email or Password is not Valid']}},
-                            status=status.HTTP_404_NOT_FOUND)
+            error_message = {}
+            if not User.objects.filter(email=email).exists():
+                error_message['email'] = 'Email is not exists'
+            elif not User.objects.filter(password=password).exists():
+                error_message['password'] = 'Password is not valid'
+            return Response({'errors': error_message}, status=status.HTTP_404_NOT_FOUND)
+
 
 
 class UserChangePasswordView(APIView):
@@ -72,20 +80,25 @@ class UserDeleteView(APIView):
         user.delete()
         return Response(status=204)
 
-class SendPasswordResetEmailView(APIView):
-    renderer_classes = [UserRenderer]
 
+
+class PasswordResetSuccessView(TemplateView):
+    template_name = 'success.html'
+
+class SendPasswordResetEmailView(APIView):
+    
     def post(self, request, format=None):
         serializer = SendPasswordResetEmailSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        return Response({'msg': 'Password Reset link send. Please check your Email'}, status=status.HTTP_200_OK)
-
+        return Response({'msg': 'Password reset link sent. Please check your email.'}, status=status.HTTP_200_OK)
 
 class UserPasswordResetView(APIView):
-    renderer_classes = [UserRenderer]
-
+    def get(self, request, uid, token, format=None):
+        return render(request, 'reset.html', {'uid': uid, 'token': token})
+    
     def post(self, request, uid, token, format=None):
         serializer = UserPasswordResetSerializer(data=request.data, context={'uid': uid, 'token': token})
         serializer.is_valid(raise_exception=True)
-        return Response({'msg': 'Password Reset Successfully'}, status=status.HTTP_200_OK)
-
+        serializer.save()
+        
+        return redirect('password-reset-success')

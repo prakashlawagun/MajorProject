@@ -9,6 +9,7 @@ phone_regex = RegexValidator(
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    photo = models.ImageField(upload_to='profile')
     frist_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     address = models.CharField(max_length=200)

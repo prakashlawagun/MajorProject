@@ -12,11 +12,11 @@ def EmailView(request):
 
 class SendEmailView(APIView):
     def post(self, request):
-        # subject = request.data['subject']
-        # message = request.data['message']
+        subject = request.data['subject']
+        message = request.data['message']
 
-        # # Save the message to the database
-        # message_obj = Email.objects.create(subject=subject, message=message)
+        # Save the message to the database
+        message_obj = Email.objects.create(subject=subject, message=message)
         serializer = EmailSerializer(data =request.data)
         if serializer.is_valid():
              data=serializer.save()
