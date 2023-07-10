@@ -1,7 +1,10 @@
-from django.urls import path
-from profiles.views import ProfileListCreateAPIView, ProfileDetailAPIView
+from django.urls import include, path
+from rest_framework import routers
+from profiles.views import UserProfileViewSet
+
+router = routers.DefaultRouter()
+router.register(r'profiles', UserProfileViewSet)
 
 urlpatterns = [
-    path('profiles/', ProfileListCreateAPIView.as_view(), name='profile-list-create'),
-    path('profiles/<int:user_id>/', ProfileDetailAPIView.as_view(), name='profile-detail'),
+    path('', include(router.urls)),
 ]
