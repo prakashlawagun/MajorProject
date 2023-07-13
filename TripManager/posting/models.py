@@ -5,7 +5,7 @@ from account.models import User
 class Post(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     body = models.TextField()
-    photo = models.ImageField(upload_to='media')
+    photo = models.ImageField(upload_to='media',blank=True,null=True)
     create_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
