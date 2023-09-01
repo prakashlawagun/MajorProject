@@ -5,7 +5,7 @@ The deep learning algorithms used by TripManager are trained on vast amounts of 
 
 TripManager uses a map-based interface to help users navigate and explore different destinations and activities. The application provides detailed information about each recommendation, including user ratings, reviews, and other relevant details. Users can also filter their recommendations based on various criteria such as budget, location, and type of activity.
 
-Unlike other travel recommendation systems, TripManager does not recommend specific hotels or adventure activities. Instead, it provides a broad range of options based on the user's preferences and allows them to choose the most suitable option for their needs. But we can add in the future.
+Unlike other travel recommendation systems, TripManager does not recommend specific hotels or adventure activities. Instead, it provides a broad range of options based on the user's preferences and allows them to choose the most suitable option for their needs. But we can add it in the future.
 
  TripManager has a feature that allows users to post about the places they have visited. This feature is called "Check-ins," and it enables users to share their travel experiences with others in the TripManager community.
 
@@ -63,3 +63,5 @@ This directory structure is for a Django project. It contains the following dire
 * `tasks`: This directory contains the project's tasks.
 * `management`: This directory contains the project's management commands.
 * `manage.py`: This file is the project's management script.
+
+  source: https://pythonislove.com/django-folder-structure
