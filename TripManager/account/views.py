@@ -36,7 +36,6 @@ class UserRegistrationView(APIView):
         token = get_tokens_for_user(user)
         return Response({'token': token, 'msg': 'Registration Successful'}, status=status.HTTP_201_CREATED)
 
-
 class UserLoginView(APIView):
     renderer_classes = [UserRenderer]
 
@@ -49,25 +48,30 @@ class UserLoginView(APIView):
         if user is not None:
             token = get_tokens_for_user(user)
             user_data = UserSerializer(user).data
-            return Response({'token': token,'user':user_data,'msg': 'Login Success'}, status=status.HTTP_200_OK)
+            return Response({'token': token, 'user': user_data, 'msg': 'Login Success'}, status=status.HTTP_200_OK)
         else:
             error_message = {}
             if not User.objects.filter(email=email).exists():
-                error_message['email'] = 'Email is not exists'
-            elif not User.objects.filter(password=password).exists():
+                error_message['email'] = 'Email is not valid'
+            else:
                 error_message['password'] = 'Password is not valid'
             return Response({'errors': error_message}, status=status.HTTP_404_NOT_FOUND)
 
 
 
 class UserChangePasswordView(APIView):
-    renderer_classes = [UserRenderer]
-    permission_classes = [IsAuthenticated]
+    def post(self, request, user_id, format=None):
+        try:
+            user = User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
-    def post(self, request, format=None):
-        serializer = UserChangePasswordSerializer(data=request.data, context={'user': request.user})
-        serializer.is_valid(raise_exception=True)
-        return Response({'msg': 'Password Changed Successfully'}, status=status.HTTP_200_OK)
+        serializer = UserChangePasswordSerializer(data=request.data, context={'user': user})
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'msg': 'Password changed successfully'}, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserDeleteView(APIView):
     permission_classes = [IsAuthenticated]

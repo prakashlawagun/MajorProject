@@ -1,10 +1,6 @@
-from django.urls import path,include
-from .views import FeedbackViewset
-from rest_framework.routers import DefaultRouter
+from django.urls import path
+from .views import FeedbackAPIView
 
-router = DefaultRouter()
-
-router.register(r'review',  FeedbackViewset)
 urlpatterns = [
-    path('',include(router.urls)),
+    path('review/<int:user_id>/', FeedbackAPIView.as_view(), name='feedback-api'),
 ]

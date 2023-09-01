@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import FeedBack
 
 class FeedBackSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='user.email')
+ 
 
     class Meta:
         model = FeedBack

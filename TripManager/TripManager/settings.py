@@ -35,6 +35,7 @@ LOCAL_APPS = [
     'profiles',
     'feedback',
     'email_notification',
+    'recommend',
 ]
 
 

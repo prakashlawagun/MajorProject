@@ -73,17 +73,3 @@ class User(AbstractBaseUser):
 
 
 
-class OTP(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    otp_code = models.CharField(max_length=6)
-    created_at = models.DateTimeField(default=timezone.now)
-    is_expired = models.BooleanField(default=False)
-
-    def __str__(self):
-        return self.otp_code
-
-    def is_valid(self):
-        """
-        Check if the OTP is still valid (not expired).
-        """
-        return not self.is_expired
