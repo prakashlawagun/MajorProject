@@ -7,5 +7,4 @@ urlpatterns = [
     path('notification/', include('email_notification.urls')),
     path('recommendation/', include('recommend.urls')),
     
-
 ]
