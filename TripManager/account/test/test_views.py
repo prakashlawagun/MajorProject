@@ -55,8 +55,6 @@ class TestViews(TestSetUp):
         # Check that the response status code is 200 (OK) for a successful login
         self.assertEqual(res.status_code, 200)
 
-
-
     
 
 
